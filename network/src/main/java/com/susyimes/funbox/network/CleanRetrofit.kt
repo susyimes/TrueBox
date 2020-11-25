@@ -69,7 +69,7 @@ class CleanRetrofit internal constructor(context: Context) {
                     override fun shouldSkipClass(clazz: Class<*>?): Boolean {
                         return false
                     }
-                }) //.registerTypeAdapterFactory(new NullStringToEmptyAdapterFactory())
+                }).setLenient() //.registerTypeAdapterFactory(new NullStringToEmptyAdapterFactory())
                 .create()
         val builder = Retrofit.Builder()
                 .baseUrl(ENDPOINT)
