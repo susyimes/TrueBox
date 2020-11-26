@@ -9,6 +9,7 @@ import com.susyimes.funbox.network.Retrofits
 
 import kotlinx.coroutines.*
 import java.lang.Exception
+import java.lang.Thread.sleep
 
 class MainActivity : AppCompatActivity() {
     private val coroutineExceptionHanlder by lazy {
@@ -21,20 +22,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main+coroutineExceptionHanlder) {
             Log.e("threaddd",Thread.currentThread().name+"///1")
 
             withContext(Dispatchers.IO){
                 Log.e("threaddd",Thread.currentThread().name+"///2")
             }
+            Toast.makeText(this@MainActivity, "111111", Toast.LENGTH_SHORT).show()
             Log.e("threaddd",Thread.currentThread().name+"///3")
         }
-        MainScope().launch(coroutineExceptionHanlder) {
+        MainScope().launch(Dispatchers.IO+coroutineExceptionHanlder) {
             Log.e("threaddd2",Thread.currentThread().name+"///111")
 
             longTimeWork()
+            withContext(Dispatchers.Main){
+                Toast.makeText(this@MainActivity, "12312312", Toast.LENGTH_SHORT).show()
+            }
 
-            Toast.makeText(this@MainActivity, "12312312", Toast.LENGTH_SHORT).show()
             Log.e("threaddd2",Thread.currentThread().name+"///333")
         }
         //Retrofits.service.get("","")
@@ -43,12 +47,7 @@ class MainActivity : AppCompatActivity() {
     suspend fun longTimeWork(){
         Log.e("threaddd2",Thread.currentThread().name+"///222")
         val hashMap = HashMap<String, Any>()
-        for (i in 0..100) {
-            try {
-                Retrofits.getService(this@MainActivity)?.post("https://www.baidu.com")
-            } catch (e: Exception) {
-            }
-        }
+        sleep(15 * 1000)
 
     }
 }
